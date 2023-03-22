@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: &NAME lb-{{NAMESPACE}}-{{SELECTOR}}
+  namespace: lb
+  labels: &LABELS
+    app: &APP kubevs-worker
+    lb_type: &LB_TYPE {{TYPE}}
+    lb_selector: &LB_SELECTOR {{SELECTOR}}
+    lb_namespace: &LB_NAMESPACE {{NAMESPACE}}
+    lb_version: &LB_VERSION {{VERSION}}
+spec:
+  serviceName: worker
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *APP
+  template:
+    metadata:
+      labels: *LABELS
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - *APP
+                topologyKey: "kubernetes.io/hostname"
+      terminationGracePeriodSeconds: 10
+      containers:
+      - image: {{IMAGE}}
+        name: *NAME
+        env:
+        - name: PYTHONUNBUFFERED
+          value: 'yes'
+        - name: LB_NAMESPACE
+          value: *LB_NAMESPACE
+        - name: LB_TYPE
+          value: *LB_TYPE
+        - name: LB_SELECTOR
+          value: *LB_SELECTOR
+        - name: LB_VERSION
+          value: *LB_VERSION
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: KUBERNETES_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        command:
+          - /opt/kubevs/worker.py
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 0.25
+          requests:
+            cpu: 0.1
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /etc/lb
+          name: config
+          readOnly: true
+        - mountPath: /etc/lb/helper-auth
+          name: helper-auth
+          readOnly: true
+        securityContext:
+          privileged: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
+        - name: helper-auth
+          secret:
+            secretName: helper-auth
+

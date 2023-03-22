@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: &NAME devel
+  labels:
+    app: *NAME
+    lb_namespace: &LB_NAMESPACE default
+    lb_type: &LB_TYPE service
+    lb_selector: &LB_SELECTOR test
+  namespace: lb
+spec:
+  terminationGracePeriodSeconds: 0
+  containers:
+  - image: docker.mamdev.server.lan/internal/popp/kubedsr:0.1.2
+    name: *NAME
+    command:
+      - sleep
+    args:
+      - infinity
+    env:
+      - name: LB_NAMESPACE
+        value: *LB_NAMESPACE
+      - name: LB_TYPE
+        value: *LB_TYPE
+      - name: LB_SELECTOR
+        value: *LB_SELECTOR
+      - name: KUBERNETES_NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+      - name: KUBERNETES_POD_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
+      - name: KUBERNETES_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+    resources:
+      limits:
+        memory: 512Mi
+        cpu: 0.2
+    volumeMounts:
+    - mountPath: /var/tmp
+      name: tmp
+    - mountPath: /etc/lb
+      name: config
+      readOnly: true
+    - mountPath: /etc/lb/helper-auth
+      name: helper-auth
+      readOnly: true
+    securityContext:  
+      privileged: true
+  serviceAccountName: controller
+  volumes:
+    - name: tmp
+      hostPath:
+        path: /var/tmp
+        type: Directory
+    - name: config
+      configMap:
+        name: config
+    - name: helper-auth
+      secret:
+        secretName: helper-auth

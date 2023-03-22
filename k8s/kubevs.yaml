@@ -1,0 +1,213 @@
+
+# Prerequisites
+# - kubectl create namespace kubevs
+# - ./secret.sh | kubectl apply -f -
+
+# Config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: kubevs
+data:
+  config.yaml: |
+    controller:
+      debug: true
+    helper:
+      debug: true
+      port: 33200
+      if:
+      - eth0
+      - eth1
+    worker:
+      debug: true
+      type: service
+
+# RBAC default - cluster view
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubevs-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: kubevs
+
+# RBAC controller - cluster view + modify local resources
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: controller
+  namespace: kubevs
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: modify
+  namespace: kubevs
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+  - create
+  - update
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: modify
+  namespace: kubevs
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: modify
+subjects:
+- kind: ServiceAccount
+  name: controller
+  namespace: kubevs
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubevs-controller-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: ServiceAccount
+  name: controller
+  namespace: kubevs
+
+# Helper
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: &NAME helper
+  namespace: kubevs
+  labels: &LABELS
+    app: &APP kubevs-helper
+spec:
+  selector:
+    matchLabels:
+      app: *APP
+  template:
+    metadata:
+      labels: *LABELS
+    spec:
+      terminationGracePeriodSeconds: 2
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.2
+        env:
+        - name: PYTHONUNBUFFERED
+          value: 'yes'
+        name: *NAME
+        command:
+          - /opt/kubevs/helper.py
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 0.25
+          requests:
+            cpu: 0.1
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /run/cri.sock
+          name: cri
+        - mountPath: /etc/lb
+          name: config
+          readOnly: true
+        - mountPath: /etc/lb/helper-auth
+          name: helper-auth
+          readOnly: true
+        securityContext:  
+          privileged: true
+      volumes:
+        - name: cri
+          hostPath:
+            path: /var/tmp/cri.sock
+            type: Socket
+        - name: config
+          configMap:
+            name: config
+        - name: helper-auth
+          secret:
+            secretName: helper-auth
+
+# Controller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &NAME controller
+  namespace: kubevs
+  labels: &LABELS
+    app: &APP kubevs-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *APP
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: *LABELS
+    spec:
+      terminationGracePeriodSeconds: 2
+      containers:
+      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.2
+        name: *NAME
+        env:
+        - name: PYTHONUNBUFFERED
+          value: 'yes'
+        - name: LB_IMAGE
+          value: *IMAGE
+        command:
+          - /opt/kubevs/controller.py
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 0.25
+          requests:
+            cpu: 0.1
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /var/tmp
+          name: tmp
+        - mountPath: /etc/lb
+          name: config
+          readOnly: true
+      serviceAccountName: controller
+      securityContext:
+        runAsUser: 1
+      volumes:
+        - name: tmp
+          hostPath:
+            path: /var/tmp
+            type: Directory
+        - name: config
+          configMap:
+            name: config
+

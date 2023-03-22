@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+  namespace: default
+  labels:
+    app: test
+  annotations:
+    lb/config: |
+      services:
+        - ip: 195.141.178.110
+          port: 80 
+        - ip: 10.74.6.210
+          port: 80
+
+spec:
+  selector:
+    app: test
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: &LABELS
+    app: &APP test
+  name: *APP
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: *APP
+  template:
+    metadata:
+      labels: *LABELS
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: test
+        readinessProbe:
+          periodSeconds: 1
+          tcpSocket:
+            port: 80
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 250m
+        image: nginx
+        #image: debian
+        #command:
+        #  - sleep
+        #args:
+        #  - infinity
+
