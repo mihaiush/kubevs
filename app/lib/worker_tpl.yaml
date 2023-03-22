@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: &NAME lb-{{NAMESPACE}}-{{SELECTOR}}
-  namespace: lb
+  name: &NAME worker-{{NAMESPACE}}-{{SELECTOR}}
+  namespace: kubevs
   labels: &LABELS
     app: &APP kubevs-worker
     lb_type: &LB_TYPE {{TYPE}}
