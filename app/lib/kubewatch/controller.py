@@ -23,7 +23,7 @@ class KubeWatchController(KubeWatchBasic):
             'name': src.metadata.name,
         }
         if op == '+':
-            if 'load_balancer_class' in src.spec and src.spec.load_balancer_class == 'kubevs':
+            if src.spec.load_balancer_class == 'kubevs':
                 if not data in self.data['config']:
                     self.data['config'].append(data)
                     r = True

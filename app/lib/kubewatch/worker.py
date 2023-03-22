@@ -36,22 +36,19 @@ class KubeWatchWorker(KubeWatchBasic):
 
     def __parse_svc(self, src):
         data = []
-        try:
-            for eip in src.spec.external_i_ps:
-                for port in spec.ports:
-                    s = {}
-                    s['ip'] = eip
-                    s['port'] = port['target_port']
-                    s['protocol'] = port['protocol'].lower()
-                    s['scheduler'] = 'rr'
-                    s['persistence'] = None
-                    data.append(s)
-                
-            if data != self.data['services']:
-                self.data['services'] = data
-                return True
-        except:
-            self.error("Can't load lb config")
+        for eip in src.spec.external_i_ps:
+            for port in spec.ports:
+                s = {}
+                s['ip'] = eip
+                s['port'] = port['target_port']
+                s['protocol'] = port['protocol'].lower()
+                s['scheduler'] = 'rr'
+                s['persistence'] = None
+                data.append(s)
+            
+        if data != self.data['services']:
+            self.data['services'] = data
+            return True
         return False
 
     def __parse_ep(self, src):
