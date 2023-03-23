@@ -115,12 +115,12 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.2
+      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.3
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         name: *NAME
-        command:
+        args:
           - /opt/kubevs/helper.py
         resources:
           limits:
@@ -177,14 +177,14 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       containers:
-      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.2
+      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.3
         name: *NAME
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         - name: LB_IMAGE
           value: *IMAGE
-        command:
+        args:
           - /opt/kubevs/controller.py
         resources:
           limits:
@@ -194,8 +194,6 @@ spec:
             cpu: 0.1
             memory: 128Mi
         volumeMounts:
-        - mountPath: /var/tmp
-          name: tmp
         - mountPath: /etc/lb
           name: config
           readOnly: true
@@ -203,10 +201,6 @@ spec:
       securityContext:
         runAsUser: 1
       volumes:
-        - name: tmp
-          hostPath:
-            path: /var/tmp
-            type: Directory
         - name: config
           configMap:
             name: config

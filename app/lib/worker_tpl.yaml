@@ -62,7 +62,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        command:
+        args:
           - /opt/kubevs/worker.py
         resources:
           limits:
