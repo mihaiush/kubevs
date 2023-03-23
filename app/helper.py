@@ -36,10 +36,18 @@ def get_netns(pns, pname):
             if rc != 0:
                 err = True
             else:
-                pid = json.loads(out)['info']['pid']
-                LOG.debug('[get-netns] pod={}, pid={}'.format(pod, pid))
-                out = '/proc/{}/ns/net'.format(pid)
-                LOG.debug('[get-netns] pod={}, netns={}'.format(pod, out))
+                #pid = json.loads(out)['info']['pid']
+                #LOG.debug('[get-netns] pod={}, pid={}'.format(pod, pid))
+                for n in json.loads(out)['info']['runtimeSpec']['linux']['namespaces']:
+                    if n['type'] == 'network':
+                        break
+                if n['type'] != 'network':
+                    LOG.error('[get-netns] pod={}, network ns not found'.format(pod))
+                    out = 'network ns not found'
+                    err = True
+                else:
+                    out = n['path']
+                    LOG.debug('[get-netns] pod={}, netns={}'.format(pod, out))
     return out, err
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
