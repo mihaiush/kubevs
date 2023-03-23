@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from lib.common import *
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn

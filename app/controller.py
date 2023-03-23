@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from lib.kubewatch import KubeWatchController
 from lib.common import *
 import kubernetes

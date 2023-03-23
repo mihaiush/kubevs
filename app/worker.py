@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from os import environ
 from lib.kubewatch import KubeWatchWorker
 from lib.lbconfig import LbConfig
