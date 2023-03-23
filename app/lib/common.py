@@ -50,5 +50,5 @@ def arp_update(ip, interfaces):
             out, rc = run('arping -U -c1 -I {} {}'.format(iface, ip))
             time.sleep(0.1)
 
-CONFIG = yaml.safe_load(open('/etc/lb/config.yaml', 'r').read())
-CONFIG['helper']['authDir'] = '/etc/lb/helper-auth'
+CONFIG = yaml.safe_load(open('/etc/kubevs/config.yaml', 'r').read())
+CONFIG['helper']['authDir'] = '/etc/kubevs/helper-auth'
