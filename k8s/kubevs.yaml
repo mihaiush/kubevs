@@ -12,6 +12,7 @@ metadata:
   namespace: kubevs
 data:
   config.yaml: |
+    # __DEVMODE__
     controller:
       debug: true
     helper:
@@ -115,13 +116,13 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.6
+      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.8
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         name: *NAME
         args:
-          - /opt/kubevs/helper.py
+          - helper.py
         resources:
           limits:
             memory: 512Mi
@@ -177,7 +178,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       containers:
-      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.6
+      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.8
         name: *NAME
         env:
         - name: PYTHONUNBUFFERED
@@ -185,7 +186,7 @@ spec:
         - name: LB_IMAGE
           value: *IMAGE
         args:
-          - /opt/kubevs/controller.py
+          - controller.py
         resources:
           limits:
             memory: 512Mi

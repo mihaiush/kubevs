@@ -63,7 +63,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         args:
-          - /opt/kubevs/worker.py
+          - worker.py
         resources:
           limits:
             memory: 512Mi
