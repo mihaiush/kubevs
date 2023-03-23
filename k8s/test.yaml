@@ -5,18 +5,21 @@ metadata:
   namespace: default
   labels:
     app: test
-  annotations:
-    lb/config: |
-      services:
-        - ip: 195.141.178.110
-          port: 80 
-        - ip: 10.74.6.210
-          port: 80
-
 spec:
+  type: LoadBalancer
+  loadBalancerClass: kubevs
+  externalIPs:
+    - 192.0.2.100
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      protocol: TCP
   selector:
     app: test
-  clusterIP: None
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,9 +49,4 @@ spec:
             memory: 512Mi
             cpu: 250m
         image: nginx
-        #image: debian
-        #command:
-        #  - sleep
-        #args:
-        #  - infinity
 

@@ -40,8 +40,8 @@ class KubeWatchWorker(KubeWatchBasic):
             for port in src.spec.ports:
                 s = {}
                 s['ip'] = eip
-                s['port'] = port['target_port']
-                s['protocol'] = port['protocol'].lower()
+                s['port'] = port.target_port
+                s['protocol'] = port.protocol.lower()
                 s['scheduler'] = 'rr'
                 s['persistence'] = None
                 data.append(s)
