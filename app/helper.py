@@ -234,8 +234,8 @@ for i in CONFIG['helper']['if']:
 
 
 httpd = ThreadingHTTPServer(('0.0.0.0', CONFIG['helper']['port']), RequestHandler)
-ssl_context = ssl.create_default_context(cafile='{}/cert'.format(CONFIG['helper']['authDir']))
-httpd.socket = ssl_context.wrap_socket(httpd.socket, server_side=True)
+#ssl_context = ssl.create_default_context(cafile='{}/cert'.format(CONFIG['helper']['authDir']))
+httpd.socket = ssl.wrap_socket (httpd.socket, keyfile='{}/key'.format(CONFIG['helper']['authDir']), certfile='{}/cert'.format(CONFIG['helper']['authDir']), server_side=True)
 
 LOG.info('Starting helper on port {}'.format(CONFIG['helper']['port']))
 httpd.serve_forever()
