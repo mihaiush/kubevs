@@ -37,7 +37,7 @@ class KubeWatchWorker(KubeWatchBasic):
     def __parse_svc(self, src):
         data = []
         for eip in src.spec.external_i_ps:
-            for port in spec.ports:
+            for port in src.spec.ports:
                 s = {}
                 s['ip'] = eip
                 s['port'] = port['target_port']
