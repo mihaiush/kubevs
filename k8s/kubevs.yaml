@@ -113,7 +113,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       hostNetwork: true
-      hostPID: true
+      #hostPID: true
       containers:
       - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.6
         env:
@@ -132,6 +132,8 @@ spec:
         volumeMounts:
         - mountPath: /run/cri.sock
           name: cri
+        - mountPath: /var/run/netns
+          name: netns
         - mountPath: /etc/lb
           name: config
           readOnly: true
@@ -145,6 +147,9 @@ spec:
           hostPath:
             path: /var/tmp/cri.sock
             type: Socket
+        - name: netns
+          hostPath:
+            path: /var/run/netns
         - name: config
           configMap:
             name: config
