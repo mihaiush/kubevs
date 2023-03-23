@@ -38,6 +38,7 @@ kw = KubeWatchWorker(environ['LB_NAMESPACE'], environ['LB_SELECTOR'], 90)
 cfg = LbConfig(if_svc, 0)
 
 def cleanup(signum, frame):
+    LOG.debug('Signal {}, cleanup'.format(signum))
     cfg.cleanup()
     exit()
 
