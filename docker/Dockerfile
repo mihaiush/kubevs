@@ -23,5 +23,5 @@ VOLUME /tmp
 RUN ln -sf /tmp/kubevs/app /opt/kubevs
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install git
 ADD docker/dev.sh /
-ENTRYPOINT /dev.sh
+ENTRYPOINT ["/dev.sh"]
 
