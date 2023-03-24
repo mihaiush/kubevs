@@ -6,7 +6,7 @@ metadata:
   labels: &LABELS
     app: &APP kubevs-worker
     lb_selector: &LB_SELECTOR {{SELECTOR}}
-    lb_uid: &LB_UID {{ UID }}
+    lb_uid: &LB_UID {{UID}}
     lb_namespace: &LB_NAMESPACE {{NAMESPACE}}
     lb_version: &LB_VERSION {{VERSION}}
 spec:
