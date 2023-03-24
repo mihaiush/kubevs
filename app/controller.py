@@ -17,7 +17,7 @@ TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
 def tpl2data(ns, n, i):
     d = TPL
     d = d.replace('{{NAMESPACE}}', ns)
-    d = d.replace('{{SELECTOR}}', n)
+    d = d.replace('{{SERVICE}}', n)
     d = d.replace('{{UID}}', i)
     d = yaml.safe_load(d)
     return d

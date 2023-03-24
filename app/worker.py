@@ -32,7 +32,7 @@ for svc_if in if_svc:
     check_rc('ip link set {} up'.format(svc_if))
 
 # Watch for kubernetes changes
-kw = KubeWatchWorker(environ['LB_NAMESPACE'], environ['LB_SELECTOR'], 90)
+kw = KubeWatchWorker(environ['LB_NAMESPACE'], environ['LB_SERVICE'], 90)
 
 # VIP + IPVS configurator
 cfg = LbConfig(if_svc, 0)

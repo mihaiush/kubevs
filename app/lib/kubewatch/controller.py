@@ -43,7 +43,7 @@ class KubeWatchController(KubeWatchBasic):
         r = False
         data = {
             'namespace': src['lb_namespace'],
-            'name': src['lb_selector'],
+            'name': src['lb_service'],
             'uid': src['lb_uid'],
         }
         if op == '+':
