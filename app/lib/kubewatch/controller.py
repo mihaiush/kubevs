@@ -21,7 +21,7 @@ class KubeWatchController(KubeWatchBasic):
         data = {
             'namespace': src.metadata.namespace,
             'name': src.metadata.name,
-            'uid': src.metadata.uid
+            'uid': src.metadata.uid.replace('-', '') # worker name
         }
         if op == '+':
             if src.spec.load_balancer_class == 'kubevs':

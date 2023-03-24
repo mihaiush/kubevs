@@ -9,12 +9,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install ca-certificates apt-tra
 
 ADD docker/kubernetes.list /etc/apt/sources.list.d/
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install cri-tools iproute2 ipvsadm procps iputils-arping iptables git
+RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install cri-tools iproute2 ipvsadm procps iputils-arping iptables
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install python3 python3-kubernetes python3-requests
+RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install git # For devmode
 
 ADD app/ /opt/kubevs/
-RUN rm -rf /opt/kubevs/lib.*
-RUN find /opt/kubevs -name __pycache__ | while read F ; do rm -rfv $F ; done
+#RUN rm -rf /opt/kubevs/lib.*
+#RUN find /opt/kubevs -name __pycache__ | while read F ; do rm -rfv $F ; done
 
 ADD docker/start.sh /
 ENTRYPOINT ["/start.sh"]
