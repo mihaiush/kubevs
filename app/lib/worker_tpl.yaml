@@ -6,6 +6,7 @@ metadata:
   labels: &LABELS
     app: &APP kubevs-worker
     lb_selector: &LB_SELECTOR {{SELECTOR}}
+    lb_uid: &LB_UID {{ UID }}
     lb_namespace: &LB_NAMESPACE {{NAMESPACE}}
     lb_version: &LB_VERSION {{VERSION}}
 spec:
@@ -41,6 +42,8 @@ spec:
           value: *LB_NAMESPACE
         - name: LB_SELECTOR
           value: *LB_SELECTOR
+        - name: LB_UID
+          value: *LB_UID
         - name: LB_VERSION
           value: *LB_VERSION
         - name: KUBERNETES_NODE_NAME

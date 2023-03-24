@@ -14,10 +14,11 @@ if CONFIG['controller']['debug']:
 TPL = open('{}/lib/worker_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
 TPL = TPL.replace('{{IMAGE}}', os.environ['LB_IMAGE'])
 TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
-def tpl2data(ns , n):
+def tpl2data(ns, n, i):
     d = TPL
     d = d.replace('{{NAMESPACE}}', ns)
     d = d.replace('{{SELECTOR}}', n)
+    d = d.replace('{{UID}}', i)
     d = yaml.safe_load(d)
     return d
 
@@ -46,7 +47,7 @@ while True:
             if first_run:
                 first_run = False
                 LOG.info('Patch worker {}'.format(lb_name))
-                d = tpl2data(lb['namespace'], lb['name'])
+                d = tpl2data(lb['namespace'], lb['name'], lb['uid'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
                     v1.patch_namespaced_stateful_set(lb_name, 'kubevs', d)
@@ -57,7 +58,7 @@ while True:
             if not cfg in data['actual']:
                 lb_name = '{}-{}-{}'.format(LB_PREFIX, cfg['namespace'], cfg['name'])
                 LOG.info('Create worker {}'.format(lb_name))
-                d = tpl2data(cfg['namespace'], cfg['name'])
+                d = tpl2data(cfg['namespace'], cfg['name'], cfg['uid'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
                     v1.create_namespaced_stateful_set('kubevs', d)

@@ -21,6 +21,7 @@ class KubeWatchController(KubeWatchBasic):
         data = {
             'namespace': src.metadata.namespace,
             'name': src.metadata.name,
+            'uid': src.metadata.uid
         }
         if op == '+':
             if src.spec.load_balancer_class == 'kubevs':
@@ -43,6 +44,7 @@ class KubeWatchController(KubeWatchBasic):
         data = {
             'namespace': src['lb_namespace'],
             'name': src['lb_selector'],
+            'uid': src['lb_uid'],
         }
         if op == '+':
             if not data in self.data['actual']:
