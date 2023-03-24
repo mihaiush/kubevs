@@ -18,29 +18,31 @@ if CONFIG['helper']['debug']:
 def get_netns(pns, pname):
     pod = '{}/{}'.format(pns,pname)
     err = False
-    # Get cri pod_id
-    out, rc = run("crictl pods -o json --namespace {} --name {}".format(pns, pname))
-    if rc != 0:
-        err = True
-    else:
+    try:
+        # Get cri pod_id
+        out, rc = run("crictl pods -o json --namespace {} --name {}".format(pns, pname))
         out = json.loads(out)['items']
-        if len(out) < 1:
-            LOG.error('[get-netns] pod={} not found'.format(pod))
-            out = 'pod not found'
-            err = True
-        else:
-            i = out[0]['id']
-            LOG.debug('[get-netns] pod={}, pod_id={}'.format(pod, i))
-            # Get container_id
-            out, rc = run('crictl ps -p {} -o json'.format(i))
-            i = json.loads(out)['containers'][0]['id']
-            LOG.debug('[get-netns] pod={}, container_id={}'.format(pod, i))
-            # Get container pid
-            out, rc = run('crictl inspect -o json {}'.format(i))
-            pid = json.loads(out)['info']['pid']
-            LOG.debug('[get-netns] pod={}, pid={}'.format(pod, pid))
+        i = out[0]['id']
+        LOG.debug('[get-netns] pod={}, pod_id={}'.format(pod, i))
+        # Get container_id
+        out, rc = run('crictl ps -p {} -o json'.format(i))
+        i = json.loads(out)['containers'][0]['id']
+        LOG.debug('[get-netns] pod={}, container_id={}'.format(pod, i))
+        # Get container pid
+        out, rc = run('crictl inspect -o json {}'.format(i))
+        pid = json.loads(out)['info']['pid']
+        LOG.debug('[get-netns] pod={}, pid={}'.format(pod, pid))
+    except Exception as e:
+        err = True
+        out = e
+    if not err:
+        if type(pid) is int:
             out = '/proc/{}/ns/net'.format(pid)
             LOG.debug('[get-netns] pod={}, netns={}'.format(pod, out))
+        else:
+            err = True
+            out = "pod={}, can't find net ns".format(pod)
+            LOG.error('[get-netns] {}'.format(out))
     return out, err
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
