@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: &NAME worker-{{NAMESPACE}}-{{SELECTOR}}
   namespace: kubevs
@@ -10,15 +10,11 @@ metadata:
     lb_namespace: &LB_NAMESPACE {{NAMESPACE}}
     lb_version: &LB_VERSION {{VERSION}}
 spec:
+  serviceName: worker
   replicas: 1
   selector:
     matchLabels:
       app: *APP
-  strategy:
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
-    type: RollingUpdate
   template:
     metadata:
       labels: *LABELS

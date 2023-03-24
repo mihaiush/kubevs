@@ -64,7 +64,7 @@ class KubeWatchController(KubeWatchBasic):
             self.error("Can't list services")
         try:
             v1 = kubernetes.client.AppsV1Api()
-            for i in v1.list_namespaced_deployment('kubevs', label_selector='app=kubevs-worker').items:
+            for i in v1.list_namespaced_stateful_set('kubevs', label_selector='app=kubevs-worker').items:
                 self.__parse_lb('+', i.metadata.labels)
         except:
             self.error("Can't list workers")
@@ -100,7 +100,7 @@ class KubeWatchController(KubeWatchBasic):
             try:
                 v1 = kubernetes.client.AppsV1Api()
                 w = kubernetes.watch.Watch()
-                for e in w.stream(v1.list_namespaced_deployment, 'kubevs', label_selector='app=kubevs-worker'):
+                for e in w.stream(v1.list_namespaced_stateful_set, 'kubevs', label_selector='app=kubevs-worker'):
                     if e['type'] == 'ERROR' and e['raw_object']['reason'] == 'Expired':
                         exp = True
                     else:

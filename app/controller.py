@@ -17,7 +17,7 @@ if CONFIG['worker']['type'] not in ['service']:
 
 LOG.debug("Worker type '{}'".format(CONFIG['worker']['type']))
 
-TPL = open('{}/lib/worker_ss_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
+TPL = open('{}/lib/worker_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
 TPL = TPL.replace('{{TYPE}}', CONFIG['worker']['type'])
 TPL = TPL.replace('{{IMAGE}}', os.environ['LB_IMAGE'])
 TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
@@ -43,21 +43,19 @@ while True:
             lb_name = '{}-{}-{}'.format(LB_PREFIX, lb['namespace'], lb['name'])
             # delete extra workers
             if not lb in data['config']:
-                LOG.info('Delete deployment {}'.format(lb_name))
+                LOG.info('Delete worker {}'.format(lb_name))
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    #v1.delete_namespaced_deployment(lb_name, 'kubevs')
                     v1.delete_namespaced_stateful_set(lb_name, 'kubevs')
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
             # update existing workers
             if first_run:
                 first_run = False
-                LOG.info('Patch deployment {}'.format(lb_name))
+                LOG.info('Patch worker {}'.format(lb_name))
                 d = tpl2data(lb['namespace'], lb['name'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    #v1.patch_namespaced_deployment(lb_name, 'kubevs', d)
                     v1.patch_namespaced_stateful_set(lb_name, 'kubevs', d)
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
@@ -65,11 +63,10 @@ while True:
         for cfg in data['config']:
             if not cfg in data['actual']:
                 lb_name = '{}-{}-{}'.format(LB_PREFIX, cfg['namespace'], cfg['name'])
-                LOG.info('Create deployment {}'.format(lb_name))
+                LOG.info('Create worker {}'.format(lb_name))
                 d = tpl2data(cfg['namespace'], cfg['name'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    #v1.create_namespaced_deployment('kubevs', d)
                     v1.create_namespaced_stateful_set('kubevs', d)
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
