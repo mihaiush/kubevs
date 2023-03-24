@@ -17,7 +17,7 @@ if CONFIG['worker']['type'] not in ['service']:
 
 LOG.debug("Worker type '{}'".format(CONFIG['worker']['type']))
 
-TPL = open('{}/lib/worker_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
+TPL = open('{}/lib/worker_ss_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
 TPL = TPL.replace('{{TYPE}}', CONFIG['worker']['type'])
 TPL = TPL.replace('{{IMAGE}}', os.environ['LB_IMAGE'])
 TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
@@ -46,7 +46,8 @@ while True:
                 LOG.info('Delete deployment {}'.format(lb_name))
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    v1.delete_namespaced_deployment(lb_name, 'kubevs')
+                    #v1.delete_namespaced_deployment(lb_name, 'kubevs')
+                    v1.delete_namespaced_stateful_set(lb_name, 'kubevs')
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
             # update existing workers
@@ -56,7 +57,8 @@ while True:
                 d = tpl2data(lb['namespace'], lb['name'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    v1.patch_namespaced_deployment(lb_name, 'kubevs', d)
+                    #v1.patch_namespaced_deployment(lb_name, 'kubevs', d)
+                    v1.patch_namespaced_stateful_set(lb_name, 'kubevs', d)
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
         # create missing workers
@@ -67,7 +69,8 @@ while True:
                 d = tpl2data(cfg['namespace'], cfg['name'])
                 try:
                     v1 = kubernetes.client.AppsV1Api()
-                    v1.create_namespaced_deployment('kubevs', d)
+                    #v1.create_namespaced_deployment('kubevs', d)
+                    v1.create_namespaced_stateful_set('kubevs', d)
                 except:
                     LOG.error('\n{}'.format(traceback.format_exc()))
                 

@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: &NAME lb-{{NAMESPACE}}-{{SELECTOR}}
-  namespace: lb
+  name: &NAME worker-{{NAMESPACE}}-{{SELECTOR}}
+  namespace: kubevs
   labels: &LABELS
     app: &APP kubevs-worker
     lb_type: &LB_TYPE {{TYPE}}
@@ -58,8 +58,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        command:
-          - /opt/kubevs/worker.py
+        args:
+          - worker.py
         resources:
           limits:
             memory: 512Mi
