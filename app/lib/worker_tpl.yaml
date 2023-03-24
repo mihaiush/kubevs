@@ -5,7 +5,6 @@ metadata:
   namespace: kubevs
   labels: &LABELS
     app: &APP kubevs-worker
-    lb_type: &LB_TYPE {{TYPE}}
     lb_selector: &LB_SELECTOR {{SELECTOR}}
     lb_namespace: &LB_NAMESPACE {{NAMESPACE}}
     lb_version: &LB_VERSION {{VERSION}}
@@ -40,8 +39,6 @@ spec:
           value: 'yes'
         - name: LB_NAMESPACE
           value: *LB_NAMESPACE
-        - name: LB_TYPE
-          value: *LB_TYPE
         - name: LB_SELECTOR
           value: *LB_SELECTOR
         - name: LB_VERSION

@@ -23,7 +23,6 @@ data:
       - eth1
     worker:
       debug: true
-      type: service
 
 # RBAC default - cluster view
 ---

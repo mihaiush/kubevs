@@ -11,14 +11,7 @@ LB_PREFIX = 'worker'
 if CONFIG['controller']['debug']:
     LOG.enable_debug()
 
-if CONFIG['worker']['type'] not in ['service']:
-    LOG.error('Unknown type ()'.format(CONFIG['worker']['type']))
-    sys.exit(2)
-
-LOG.debug("Worker type '{}'".format(CONFIG['worker']['type']))
-
 TPL = open('{}/lib/worker_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
-TPL = TPL.replace('{{TYPE}}', CONFIG['worker']['type'])
 TPL = TPL.replace('{{IMAGE}}', os.environ['LB_IMAGE'])
 TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
 def tpl2data(ns , n):
