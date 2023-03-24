@@ -34,7 +34,8 @@ while True:
     else:
         LOG.debug('[config-data] {}'.format(data))
         for lb in data['actual']:
-            lb_name = '{}-{}-{}'.format(LB_PREFIX, lb['namespace'], lb['name'])
+            #lb_name = '{}-{}-{}'.format(LB_PREFIX, lb['namespace'], lb['name'])
+            lb_name = '{}-{}'.format(LB_PREFIX, lb['uid'])
             # delete extra workers
             if not lb in data['config']:
                 LOG.info('Delete worker {}'.format(lb_name))
