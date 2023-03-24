@@ -57,7 +57,8 @@ while True:
         # create missing workers
         for cfg in data['config']:
             if not cfg in data['actual']:
-                lb_name = '{}-{}-{}'.format(LB_PREFIX, cfg['namespace'], cfg['name'])
+                #lb_name = '{}-{}-{}'.format(LB_PREFIX, cfg['namespace'], cfg['name'])
+                lb_name = '{}-{}'.format(LB_PREFIX, cfg['uid'])
                 LOG.info('Create worker {}'.format(lb_name))
                 d = tpl2data(cfg['namespace'], cfg['name'], cfg['uid'])
                 try:
