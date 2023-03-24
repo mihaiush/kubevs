@@ -45,10 +45,10 @@ def check_rc(cmd):
     return out, rc
 
 def arp_update(ip, interfaces):
-    for iface in interfaces:
-        for x in range(2):
+    for x in range(2):
+        for iface in interfaces:
             out, rc = run('arping -U -c1 -I {} {}'.format(iface, ip))
-            time.sleep(0.1)
+        time.sleep(0.1)
 
 CONFIG = yaml.safe_load(open('/etc/kubevs/config.yaml', 'r').read())
 CONFIG['helper']['authDir'] = '/etc/kubevs/helper-auth'
