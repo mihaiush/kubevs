@@ -36,10 +36,11 @@ class KubeWatchWorker(KubeWatchBasic):
 
     def __parse_svc(self, src):
         data = []
-        for eip in src.spec.external_i_ps:
+        for vip in src.metadata.annotations['kubevs/virtualIPs'].split(','):
+            vip = vip.trim()
             for port in src.spec.ports:
                 s = {}
-                s['ip'] = eip
+                s['ip'] = vip
                 s['port'] = port.target_port
                 s['protocol'] = port.protocol.lower()
                 s['scheduler'] = 'rr'

@@ -19,12 +19,12 @@ class KubeWatchController(KubeWatchBasic):
     def __parse_svc(self, op, src):
         r = False
         data = {
-            'namespace': src.metadata.namespace,
-            'name': src.metadata.name,
-            'uid': src.metadata.uid.replace('-', '') # worker name
+            'namespace': src.namespace,
+            'name': src.name,
+            'uid': src.uid.replace('-', '') # worker name
         }
         if op == '+':
-            if src.spec.load_balancer_class == 'kubevs':
+            if 'kubevs/virtualIPs' in src.annotations:
                 if not data in self.data['config']:
                     self.data['config'].append(data)
                     r = True
@@ -61,7 +61,7 @@ class KubeWatchController(KubeWatchBasic):
         try:
             v1 = kubernetes.client.CoreV1Api()
             for i in v1.list_service_for_all_namespaces().items:
-                self.__parse_svc('+', i)
+                self.__parse_svc('+', i.metadata)
         except:
             self.error("Can't list services")
         try:
@@ -86,7 +86,7 @@ class KubeWatchController(KubeWatchBasic):
                             t = '-'
                         else:
                             t = '+'
-                        if self.__parse_svc(t, e['object']):
+                        if self.__parse_svc(t, e['object'].metadata):
                             self.put()
             except:
                 if exp:

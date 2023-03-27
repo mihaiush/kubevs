@@ -5,11 +5,12 @@ metadata:
   namespace: default
   labels:
     app: test
+  annotations:
+    kubevs/virtualIPs: popp-test-qa.po.server.lan
+    kubevs/service.https.persistent: 'true'
+    kubevs/service.https.scheduler: lc
 spec:
-  type: LoadBalancer
-  loadBalancerClass: kubevs
-  externalIPs:
-    - 192.0.2.100
+  clusterIP: None
   ports:
     - name: http
       port: 80
