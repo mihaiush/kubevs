@@ -37,7 +37,7 @@ class KubeWatchWorker(KubeWatchBasic):
     def __parse_svc(self, src):
         data = []
         for vip in src.metadata.annotations['kubevs/virtualIPs'].split(','):
-            vip = vip.trim()
+            vip = vip.strip()
             for port in src.spec.ports:
                 s = {}
                 s['ip'] = vip
