@@ -9,7 +9,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install ca-certificates apt-tra
 
 ADD docker/kubernetes.list /etc/apt/sources.list.d/
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install cri-tools iproute2 ipvsadm procps iputils-arping iptables
+RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install cri-tools iproute2 ipvsadm procps iputils-arping 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install python3 python3-kubernetes python3-requests
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install git # For devmode
 
