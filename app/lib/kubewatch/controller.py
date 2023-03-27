@@ -24,7 +24,7 @@ class KubeWatchController(KubeWatchBasic):
             'uid': src.uid.replace('-', '') # worker name
         }
         if op == '+':
-            if 'kubevs/virtualIPs' in src.annotations:
+            if src.annotations and 'kubevs/virtualIPs' in src.annotations:
                 if not data in self.data['config']:
                     self.data['config'].append(data)
                     r = True
