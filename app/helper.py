@@ -132,15 +132,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             run('nsenter --net={} ip link set tunl0 up'.format(ns))
             run('nsenter --net={} sysctl net.ipv4.tcp_keepalive_time=600'.format(ns))
             run('nsenter --net={} sysctl net.ipv4.ip_forward=1'.format(ns))
+            # actual arp seting max(all, if), http://kb.linuxvirtualserver.org/wiki/Using_arp_announce/arp_ignore_to_disable_ARP
             run('nsenter --net={} sysctl net.ipv4.conf.all.arp_ignore=1'.format(ns))
             run('nsenter --net={} sysctl net.ipv4.conf.all.arp_announce=2'.format(ns))
-            # apparenly not necessary, actual arp seting max(all, if), http://kb.linuxvirtualserver.org/wiki/Using_arp_announce/arp_ignore_to_disable_ARP
-            #out, rc = run('nsenter --net={} ip link show'.format(ns))
-            #for l in out.split('\n'):
-            #    r = self.re_if.search(l)
-            #    if r != None:
-            #        run('nsenter --net={} sysctl net.ipv4.conf.{}.arp_ignore=1'.format(ns, r.group(1)))
-            #        run('nsenter --net={} sysctl net.ipv4.conf.{}.arp_announce=2'.format(ns, r.group(1)))
             run('nsenter --net={} sysctl net.ipv4.conf.tunl0.rp_filter=2'.format(ns))
         else:
             LOG.debug('[tun] pod={} netns OK'.format(pod))
