@@ -7,7 +7,7 @@ metadata:
     app: test
   annotations:
     kubevs/virtualIPs: 10.86.2.200
-    kubevs/service.https.persistent: '300'
+    kubevs/service.https.persistent: 'yes'
     kubevs/service.https.scheduler: lc
 spec:
   clusterIP: None

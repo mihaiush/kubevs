@@ -108,7 +108,10 @@ class LbConfig:
             sched = svc['scheduler'].lower()
             persist = svc['persistent']
             if persist != None:
-                persist = ' -p {}'.format(persist)
+                if persist.lower() in ['yes', 'true', 'on']:
+                    persist = ' -p'
+                else:
+                    persist = ' -p {}'.format(int(persist))
             else:
                 persist = ''
             svc_config['-{} {}:{}'.format(proto, ip, port)] = '-s {}{}'.format(sched, persist)
