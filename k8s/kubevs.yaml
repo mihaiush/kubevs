@@ -3,8 +3,8 @@
 # - kubectl create namespace kubevs
 # - ./secret.sh | kubectl apply -f -
 
-# Config
 ---
+# Config
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -24,8 +24,8 @@ data:
     worker:
       debug: true
 
-# RBAC default - cluster view
 ---
+# RBAC default - cluster view
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -39,8 +39,8 @@ subjects:
   name: default
   namespace: kubevs
 
-# RBAC controller - cluster view + modify local resources
 ---
+# RBAC controller - cluster view + modify local resources
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -94,8 +94,8 @@ subjects:
   name: controller
   namespace: kubevs
 
-# Helper
 ---
+# Helper
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -152,8 +152,8 @@ spec:
           secret:
             secretName: helper-auth
 
-# Controller
 ---
+# Controller
 apiVersion: apps/v1
 kind: Deployment
 metadata:

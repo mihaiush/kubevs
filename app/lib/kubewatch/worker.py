@@ -43,8 +43,18 @@ class KubeWatchWorker(KubeWatchBasic):
                 s['ip'] = vip
                 s['port'] = port.target_port
                 s['protocol'] = port.protocol.lower()
-                s['scheduler'] = 'rr'
-                s['persistence'] = None
+                # scheduler
+                k = 'kubevs/service.{}.scheduler'.format(port.name)
+                if k in src.metadata.annotations:
+                    s['scheduler'] = src.metadata.annotations[k]
+                else:
+                    s['scheduler'] = 'rr'
+                # persistent
+                k = 'kubevs/service.{}.persistent'.format(port.name)
+                if k in src.metadata.annotations:
+                    s['persistent'] = src.metadata.annotations[k]
+                else:
+                    s['persistent'] = None
                 data.append(s)
             
         if data != self.data['services']:

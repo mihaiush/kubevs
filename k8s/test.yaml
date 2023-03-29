@@ -6,8 +6,8 @@ metadata:
   labels:
     app: test
   annotations:
-    kubevs/virtualIPs: popp-test-qa.po.server.lan
-    kubevs/service.https.persistent: 'true'
+    kubevs/virtualIPs: 10.86.2.200
+    kubevs/service.https.persistent: '300'
     kubevs/service.https.scheduler: lc
 spec:
   clusterIP: None
