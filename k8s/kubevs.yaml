@@ -145,7 +145,7 @@ spec:
       volumes:
         - name: cri
           hostPath:
-            path: /var/tmp/cri.sock
+            path: ${CRI_SOCKET}
             type: Socket
         - name: config
           configMap:
