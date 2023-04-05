@@ -12,6 +12,7 @@ if CONFIG['controller']['debug']:
     LOG.enable_debug()
 
 TPL = open('{}/lib/worker_tpl.yaml'.format(os.path.dirname(os.path.realpath(__file__))), 'r').read()
+TPL = TPL.replace('{{PROXY}}', os.environ['PROXY'])
 TPL = TPL.replace('{{IMAGE}}', os.environ['LB_IMAGE'])
 TPL = TPL.replace('{{VERSION}}', os.environ['LB_IMAGE'].split(':')[-1])
 def tpl2data(ns, n, i):

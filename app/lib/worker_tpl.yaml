@@ -38,6 +38,8 @@ spec:
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
+        - name: PROXY
+          value: {{PROXY}}
         - name: LB_NAMESPACE
           value: *LB_NAMESPACE
         - name: LB_SERVICE

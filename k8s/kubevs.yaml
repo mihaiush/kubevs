@@ -119,6 +119,8 @@ spec:
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
+        - name: PROXY
+          value: ${PROXY}
         name: *NAME
         args:
           - helper.py
@@ -182,6 +184,8 @@ spec:
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
+        - name: PROXY
+          value: ${PROXY}
         - name: LB_IMAGE
           value: *IMAGE
         args:
