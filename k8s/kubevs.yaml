@@ -115,7 +115,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: docker.mamdev.server.lan/internal/popp/kubevs:0.0.9
+      - image: ${IMAGE}
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
@@ -177,7 +177,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       containers:
-      - image: &IMAGE docker.mamdev.server.lan/internal/popp/kubevs:0.0.9
+      - image: &IMAGE ${IMAGE}
         name: *NAME
         env:
         - name: PYTHONUNBUFFERED
