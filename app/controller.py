@@ -6,8 +6,6 @@ import os
 import yaml
 import sys
 
-LB_PREFIX = 'worker'
-
 if CONFIG['controller']['debug']:
     LOG.enable_debug()
 
@@ -35,8 +33,7 @@ while True:
     else:
         LOG.debug('[config-data] {}'.format(data))
         for lb in data['actual']:
-            #lb_name = '{}-{}-{}'.format(LB_PREFIX, lb['namespace'], lb['name'])
-            lb_name = '{}-{}'.format(LB_PREFIX, lb['uid'])
+            lb_name = 'worker-{}'.format(lb['uid'])
             # delete extra workers
             if not lb in data['config']:
                 LOG.info('Delete worker {}'.format(lb_name))
@@ -58,8 +55,7 @@ while True:
         # create missing workers
         for cfg in data['config']:
             if not cfg in data['actual']:
-                #lb_name = '{}-{}-{}'.format(LB_PREFIX, cfg['namespace'], cfg['name'])
-                lb_name = '{}-{}'.format(LB_PREFIX, cfg['uid'])
+                lb_name = 'worker-{}'.format(cfg['uid'])
                 LOG.info('Create worker {}'.format(lb_name))
                 d = tpl2data(cfg['namespace'], cfg['name'], cfg['uid'])
                 try:
