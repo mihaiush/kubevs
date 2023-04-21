@@ -2,7 +2,7 @@
 # Prerequisites
 # - kubectl create namespace kubevs
 # - ./secret.sh | kubectl -n kubevs apply -f -
-# - replace ${IMAGE}, ${PROXY}, ${CRI_SOCKET} with actual values
+# - replace ${PROXY}, ${CRI_SOCKET} with actual values
 # - delete __DEVMODE__ from configmap
 # - adjust helper interfaces
 
@@ -123,7 +123,7 @@ spec:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         - name: PROXY
-          value: http://popp-proxy-qa-bs01.po.server.lan:3128/
+          value: ${PROXY}
         name: *NAME
         args:
           - helper.py
@@ -148,7 +148,7 @@ spec:
       volumes:
         - name: cri
           hostPath:
-            path: /run/crio/crio.sock
+            path: ${CRI_SOCKET}
             type: Socket
         - name: config
           configMap:
@@ -188,7 +188,7 @@ spec:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         - name: PROXY
-          value: http://popp-proxy-qa-bs01.po.server.lan:3128/
+          value: ${PROXY}
         - name: LB_IMAGE
           value: *IMAGE
         args:
