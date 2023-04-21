@@ -118,12 +118,12 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: ${IMAGE}
+      - image: mihaiush/kubevs:53-48f129b
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         - name: PROXY
-          value: ${PROXY}
+          value: http://popp-proxy-qa-bs01.po.server.lan:3128/
         name: *NAME
         args:
           - helper.py
@@ -148,7 +148,7 @@ spec:
       volumes:
         - name: cri
           hostPath:
-            path: ${CRI_SOCKET}
+            path: /run/crio/crio.sock
             type: Socket
         - name: config
           configMap:
@@ -182,13 +182,13 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       containers:
-      - image: &IMAGE ${IMAGE}
+      - image: &IMAGE mihaiush/kubevs:53-48f129b
         name: *NAME
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
         - name: PROXY
-          value: ${PROXY}
+          value: http://popp-proxy-qa-bs01.po.server.lan:3128/
         - name: LB_IMAGE
           value: *IMAGE
         args:

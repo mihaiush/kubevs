@@ -7,7 +7,7 @@ if grep __DEVMODE__ /etc/kubevs/config.yaml ; then
     else
         GIT_PROXY=""
     fi
-    ${GIT_PROXY} git clone https://github.com/mihaiush/kubevs.git
+    eval "${GIT_PROXY} git clone https://github.com/mihaiush/kubevs.git"
     cd kubevs
     git checkout dev
     cd app
