@@ -1,10 +1,10 @@
 
 # Prerequisites
 # - kubectl create namespace kubevs
-# - ./secret.sh | kubectl apply -f -
-#
-# replace ${IMAGE}, ${PROXY}, ${CRI_SOCKET} with actual values
-# delete __DEVMODE__ from configmap
+# - ./secret.sh | kubectl -n kubevs apply -f -
+# - replace ${IMAGE}, ${PROXY}, ${CRI_SOCKET} with actual values
+# - delete __DEVMODE__ from configmap
+# - adjust helper interfaces
 
 ---
 # Config
