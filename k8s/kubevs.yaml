@@ -118,7 +118,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: mihaiush/kubevs:53-48f129b
+      - image: mihaiush/kubevs:56-3c3bdfe
         env:
         - name: PYTHONUNBUFFERED
           value: 'yes'
@@ -182,7 +182,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 2
       containers:
-      - image: &IMAGE mihaiush/kubevs:53-48f129b
+      - image: &IMAGE mihaiush/kubevs:56-3c3bdfe
         name: *NAME
         env:
         - name: PYTHONUNBUFFERED
